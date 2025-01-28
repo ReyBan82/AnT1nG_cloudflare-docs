@@ -2,22 +2,22 @@
 
 **[View the docs →](https://developers.cloudflare.com/)**
 
-[Contribute to the docs](https://github.com/cloudflare/cloudflare-docs/blob/production/CONTRIBUTING.md)
+## Why Cloudflare Docs is open source
+
+Our documentation is open source so that we can stay connected with our community and quickly implement feedback. Whether you have opened an issue to provide feedback or contributed your own content, we thank you for helping us maintain quality documentation.
+
+If you have any feedback for our documentation or are interested in contributing, please refer to our [contribution guidelines.](https://github.com/cloudflare/cloudflare-docs/blob/production/CONTRIBUTING.md)
 
 ## Setup
 
-You must have [Hugo](https://gohugo.io) installed on your system and available in your `$PATH` as a global binary. Most operating systems are supported – follow the relevant [Install Hugo](https://gohugo.io/getting-started/installing) instructions for your operating system guides to get started.
-
-> **Important:** This project is built with version `0.92.2+extended` but `0.92.x` is the minimum required version. You may (probably) use a newer version of Hugo, but will be subject to any Hugo changes.
-
-You must also have a recent version of Node.js (14+) installed. You may use [Volta](https://github.com/volta-cli/volta), a Node version manager, to install the latest version of Node and `npm`, which is a package manager that is included with `node`'s installation.
+You must have a recent version of Node.js (22+) installed. You may use [Volta](https://github.com/volta-cli/volta), a Node version manager, to install the latest version of Node and `npm`, which is a package manager that is included with `node`'s installation.
 
 ```sh
 $ curl https://get.volta.sh | bash
-$ volta install node
+$ volta install node@22
 ```
 
-Finally, install the Node.js dependencies for this project using npm or another package manager:
+Install the Node.js dependencies for this project using npm or another package manager:
 
 ```sh
 $ npm install
@@ -31,70 +31,19 @@ When making changes to the site, including any content changes, you may run a lo
 $ npm run dev
 ```
 
-This spawns a server that will be accessible via `http://localhost:8788` in your browser. Additionally, any changes made within the project – including `content/**` changes – will automatically reload your browser tab(s), allowing you to instantly preview your changes!
+This spawns a server that will be accessible via `http://localhost:1111` in your browser. Additionally, any changes made within the project – including `content/**` changes – will automatically reload your browser tab(s), allowing you to instantly preview your changes.
 
-Additionally, this project includes a CI step for ensuring consistent code style. This applies to all files within the project, including markdown (`*.md`) files, but will not affect the content itself or the content's output display. To see the style error(s), you may run:
+### Recommendations
 
-```sh
-$ npm run lint
-```
+Part of our application accesses the GitHub API (to populate the [Wrangler changelog](https://developers.cloudflare.com/workers/platform/changelog/wrangler/)).
 
-Finally, some of these code-style errors may be fixed automatically. To do so, you may run:
-
-```sh
-$ npm run format
-```
+<!--
+Since GitHub gives a higher request limit to authenticated requests, you may want to add a [classic token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-tokens-classic) with permissions for `repos:public_repo` to `/assets/secrets/github_token.txt`. The token value should be the only thing in your file.
+-->
 
 ## Deployment
 
 Our docs are deployed using [Cloudflare Pages](https://pages.cloudflare.com). Every commit pushed to production will automatically deploy to [developers.cloudflare.com](https://developers.cloudflare.com), and any pull requests opened will have a corresponding staging URL available in the pull request comments.
-
-## Visual Studio Code snippets
-
-This repository includes a file with [Visual Studio Code snippets](https://code.visualstudio.com/docs/editor/userdefinedsnippets) for the most common Hugo shortcodes used Developer Docs.
-
-The available snippets are:
-
-Prefixes | Description
----|---
-`asideheader` | Inserts an `Aside` shortcode with header text.
-`asidenoheader` | Inserts an `Aside` shortcode without a header.
-`ccol` | Surrounds the current selection with `content-column` shortcodes.
-`tblwrap` | Surrounds the current selection with `table-wrap` shortcodes.
-`directory` | Inserts a `directory-listing` shortcode.
-`headerfullfile` | Inserts a file header for a complete Markdown file.
-`metatitle` | Inserts meta title fields in existing Markdown header. Used to complement a full file header.
-`metadescription` | Inserts meta description fields in existing Markdown header. Used to complement a full file header.
-`headerpartialfile` | Inserts a header for a partial Markdown file.
-`headerpartialfileparams` | Inserts a header for a partial Markdown file with input parameters.
-`partialinclude` or `renderpartial` | Inserts a `render` shortcode to include content from a partial in the current document.
-`partialincludeparams` or `renderpartialparams` | Inserts a `render` shortcode to include content from a partial with input parameters in the current document.
-`twotabs` or `addtabs` | Inserts a new tabs section with two tabs for dashboard and API instructions.
-`detailssection` or `collapsible` | Inserts a collapsible `<details>` HTML element.
-
-Triggering one of the available snippets will insert their body content at the current cursor position.
-
-Additionally, the following snippets support surrounding existing text:
-* `Aside with header`
-* `Aside without header`
-* `Surround with content-column`
-* `Surround with table-wrap`
-* `Create collapsible details section`
-
-### How to use
-
-Note: Make sure you open the root folder of your cloned repository in Visual Studio Code (VSCode), so that VSCode correctly detects the snippets file stored in the `.vscode/` sub-folder.
-
-To enter a snippet:
-1. Enter the snippet prefix and press `Ctrl+Space` (`Command+Space` on a Mac).
-2. Select the desired snippet and press `Enter`.
-3. (Optional) Enter or select a value for the first placeholder supported by the snippet, if any, and press `Tab` to move to the next placeholder. Keep replacing placeholders and pressing `Tab`. When there are no more placeholders, pressing `Tab` will end the process.
-
-To surround existing content with a snippet:
-1. Select the text you wish to surround with a snippet.
-2. Enter the snippet prefix (temporarily replacing the selected text) and press `Ctrl+Space` (`Command+Space` on a Mac).
-3. Select the desired snippet and press `Enter`. VSCode will insert the snippet body and paste the previously selected content in the correct location.
-4. (Optional) Enter or select a value for the first placeholder supported by the snippet, if any, and press `Tab` to move to the next placeholder. Keep replacing placeholders and pressing `Tab`. When there are no more placeholders, pressing `Tab` will end the process.
 
 ## For Cloudflare employees
 
@@ -106,3 +55,21 @@ Except as otherwise noted, Cloudflare and any contributors grant you a license t
 
 Cloudflare products and services referenced in the documentation may be either trademarks or registered trademarks of Cloudflare in the United States and/or other countries. The licenses for this project do not grant you rights to use any Cloudflare names, logos, or trademarks. Cloudflare's general trademark guidelines can be found at [https://www.cloudflare.com/trademark/](https://www.cloudflare.com/trademark/).
 Cloudflare and any contributors reserve all other rights, whether under their respective copyrights, patents, or trademarks, whether by implication, estoppel, or otherwise.
+
+Please note that we may use AI tools to help us review technical documentation, pull requests and other issues submitted to our public GitHub page in order to identify and correct mistakes and other inconsistencies in our developer documentation. Please refrain from sharing any personal information in your submissions.
+
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                      |
+|:--------------------------|:--------------------------------------------|
+| `npm install`             | Installs dependencies                       |
+| `npm run dev`             | Starts local dev server at `localhost:1111` |
+| `npx astro build`         | Build your production site to `./dist/`     |
+| `npm run astro -- --help` | Get help using the Astro CLI                |
+
+## 👀 Want to learn more?
+
+Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
