@@ -1,52 +1,59 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '**'
   pull_request:
     branches:
       - production
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   compile:
     name: Compiles
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18.1
-      - uses: peaceiris/actions-hugo@v2
+          node-version: 22
+          cache: "npm"
+      - uses: actions/cache/restore@v4
         with:
-          hugo-version: '0.92.0'
-          extended: true
+          path: |
+            node_modules/.astro
+          key: static
 
-      - name: (env) pnpm
-        run: curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | node
+      - run: npm ci
+      - run: npm run check
 
-      - run: pnpm install
+      - uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          fail_level: error
+          filter_mode: nofilter
 
-      - run: make build
+      - run: npm run format:core:check
+      ## TODO: content formatting checks
+      - run: npm run build
         env:
-          NODE_OPTIONS: "--max-old-space-size=8192"
+          NODE_OPTIONS: "--max-old-space-size=4192"
+          RUN_LINK_CHECK: true
 
-      - name: Broken Links
-        run: pnpm run crawl
-        if: success()
-  # lint:
-  #   name: Lint
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16
-  #     - name: (env) pnpm
-  #       run: curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | node
-  #     - run: pnpm install
-  #     - run: pnpm run lint
+      - run: npm run check:worker
+
+      - uses: actions/cache/save@v4
+        with:
+          path: |
+            node_modules/.astro
+          key: static
+
+      - name: Check - Validate redirects (infinite loops, sources with fragment)
+        run: npx tsm bin/validate-redirects.ts
+
+      - name: Tests
+        run: npm run test
